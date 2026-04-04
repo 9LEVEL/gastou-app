@@ -90,12 +90,16 @@ docker compose up --build -d
 
 Acesse: http://localhost:8081
 
-O comando acima executa automaticamente:
+Pronto. Não precisa criar conta, configurar banco ou editar arquivos — tudo funciona automaticamente.
+
+> **Sem login/senha:** esta versão é para uso pessoal/familiar em rede local. Qualquer pessoa com acesso à URL consegue usar o app. Não exponha a porta 8081 para a internet sem adicionar autenticação.
+
+O `docker compose up` executa automaticamente:
 - Build do frontend Vue com Vite
 - Build do backend Go
 - Criação do banco SQLite em `./data/`
 - Execução das migrations
-- Seed com produtos e preços de referência
+- Seed com 50 produtos e preços de referência reais
 
 ### Instalar no celular (PWA)
 
@@ -141,9 +145,26 @@ docker compose logs -f app
 # Rebuild após alterar código
 docker compose up --build -d
 
-# Limpar tudo (apaga o banco)
-docker compose down -v && rm -f data/mercado.db
+# Limpar tudo (apaga o banco e recria com seed)
+docker compose down -v && rm -f data/mercado.db && docker compose up -d
 ```
+
+### Backup
+
+Todos os dados ficam em `./data/mercado.db`. Para fazer backup basta copiar esse arquivo:
+
+```bash
+cp data/mercado.db data/mercado-backup-$(date +%Y%m%d).db
+```
+
+### Atualizar
+
+```bash
+git pull
+docker compose up --build -d
+```
+
+O banco não é afetado — seus dados são preservados entre atualizações.
 
 ## API
 
