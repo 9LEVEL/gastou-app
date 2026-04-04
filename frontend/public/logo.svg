@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" role="img">
+  <title>Gastou.app</title>
+  <!-- Shopping cart outline path -->
+  <!-- Cart body: starts at handle, goes to basket -->
+  <path d="M8 10 L12 10 L16 28 L34 28 L37 16 L14 16" fill="none" stroke="#2D7A5F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Cart wheels -->
+  <circle cx="18" cy="32" r="2.5" fill="none" stroke="#2D7A5F" stroke-width="2"/>
+  <circle cx="30" cy="32" r="2.5" fill="none" stroke="#2D7A5F" stroke-width="2"/>
+  <!-- Check badge: small filled circle top-right of cart -->
+  <circle cx="36" cy="10" r="7" fill="#2D7A5F"/>
+  <path d="M32.5 10 L35 12.5 L39.5 7.5" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Text -->
+  <text x="48" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" fill="#2D7A5F">
+    <tspan font-size="22" font-weight="700" letter-spacing="-0.5">gastou</tspan><tspan font-size="22" font-weight="300" opacity="0.75" letter-spacing="-0.5">.app</tspan>
+  </text>
+</svg>

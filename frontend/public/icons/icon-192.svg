@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Gastou.app icon">
+  <title>Gastou.app</title>
+
+  <!-- White circle background -->
+  <circle cx="96" cy="96" r="96" fill="#ffffff"/>
+
+  <!-- Receipt body — centered, scaled up from 32x32 grid (x6) -->
+  <!-- Original: rect x=5 y=2 w=22 h=28 → scaled ×5.5 offset to center in 192 -->
+  <!-- Scale factor: icon occupies ~120px of 192px canvas, padded 36px each side -->
+
+  <rect x="56" y="28" width="80" height="104" rx="8" ry="8" fill="#2D7A5F"/>
+
+  <!-- Torn bottom edge -->
+  <path d="M56,108 L56,132
+           Q63,124 70,132
+           Q77,140 84,132
+           Q91,124 98,132
+           Q105,140 112,132
+           Q119,124 126,132
+           Q133,140 136,132
+           L136,108 Z"
+        fill="#2D7A5F"/>
+
+  <!-- Lines on receipt -->
+  <line x1="70" y1="52" x2="114" y2="52" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="70" y1="68" x2="104" y2="68" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="70" y1="84" x2="110" y2="84" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Checkmark in white circle -->
+  <circle cx="136" cy="140" r="32" fill="#ffffff"/>
+  <circle cx="136" cy="140" r="28" fill="#F5F0EB"/>
+  <circle cx="136" cy="140" r="24" fill="#2D7A5F"/>
+  <polyline points="124,140 132,148 148,128"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="5.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+</svg>
