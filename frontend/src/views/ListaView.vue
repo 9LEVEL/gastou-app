@@ -4,17 +4,19 @@
     <div class="sticky-header">
       <div v-if="listaAtiva" class="lista-header-content">
         <div class="flex items-center justify-between" style="margin-bottom: 8px;">
-          <button
-            class="lista-nome-btn"
-            @click="selectorAberto = true"
-          >
-            <span class="font-display truncate" style="font-size: 1.1rem; font-weight: 700;">
-              {{ listaAtiva.nome }}
-            </span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; color: var(--color-text-secondary);">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </button>
+          <div class="flex items-center" style="gap: 6px; flex: 1; min-width: 0;">
+            <select
+              :value="listaAtiva.id"
+              @change="trocarLista(Number(($event.target as HTMLSelectElement).value))"
+              style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; border: none; background: transparent; color: var(--color-text); padding: 0; height: auto; min-height: auto; cursor: pointer; max-width: 100%;"
+            >
+              <option
+                v-for="l in listas"
+                :key="l.id"
+                :value="l.id"
+              >{{ l.nome }} ({{ meses[l.mes - 1] }}/{{ l.ano }})</option>
+            </select>
+          </div>
         </div>
         <div class="flex" style="gap: 8px; flex-wrap: wrap;">
           <span class="chip chip-primary">
@@ -53,24 +55,12 @@
     <!-- Loading -->
     <div v-if="loading" class="loading-spinner" style="margin: 48px auto;"></div>
 
-    <!-- Empty State: sem lista nenhuma -->
-    <div v-else-if="!listaAtiva" class="empty-state" style="padding: 60px 24px;">
-      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px; opacity: 0.7;">
-        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
-        <rect x="9" y="3" width="6" height="4" rx="1"/>
-        <line x1="9" y1="12" x2="15" y2="12"/>
-        <line x1="9" y1="16" x2="13" y2="16"/>
-      </svg>
-      <p style="font-size: 1.05rem; font-weight: 600; color: var(--color-text);">Sua primeira lista de compras</p>
-      <p class="text-sm text-secondary" style="margin-top: 4px; margin-bottom: 20px;">
-        Crie uma lista para o mês e adicione os produtos que sua família precisa.
-      </p>
-      <button class="btn btn-primary" style="width: 100%; max-width: 280px;" @click="abrirModalNovaLista">
-        Criar Primeira Lista
-      </button>
+    <!-- Empty State -->
+    <div v-else-if="!listaAtiva" class="empty-state">
+      <p>Nenhuma lista encontrada.</p>
+      <p class="text-sm text-secondary">Crie uma lista para começar.</p>
     </div>
 
-    <!-- Empty State: lista ativa mas sem itens -->
     <div v-else-if="grouped.length === 0 && !loading" class="empty-state">
       <p>Nenhum item na lista.</p>
       <p class="text-sm text-secondary">Toque no + para adicionar itens.</p>
@@ -249,92 +239,6 @@
         </div>
       </form>
     </Modal>
-
-    <!-- Lista Selector (bottom sheet) -->
-    <ListaSelector
-      :show="selectorAberto"
-      :listas="listas"
-      :ativa-id="listaAtiva?.id ?? null"
-      @close="selectorAberto = false"
-      @select="selecionarLista"
-      @create="abrirModalNovaLista(); selectorAberto = false"
-      @delete="confirmarDeleteLista"
-      @update="handleUpdateLista"
-    />
-
-    <!-- Modal Nova Lista -->
-    <Modal
-      :show="modalListaAberto"
-      title="Nova Lista"
-      @close="fecharModalLista"
-    >
-      <form style="padding: 0 16px 16px;" @submit.prevent="salvarNovaLista">
-        <div class="form-group">
-          <label>Nome <span style="color: var(--color-danger);">*</span></label>
-          <input
-            v-model="formLista.nome"
-            type="text"
-            placeholder="Ex: Compras Maio"
-            required
-          />
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Mês <span style="color: var(--color-danger);">*</span></label>
-            <input
-              v-model.number="formLista.mes"
-              type="number"
-              min="1"
-              max="12"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label>Ano <span style="color: var(--color-danger);">*</span></label>
-            <input
-              v-model.number="formLista.ano"
-              type="number"
-              min="2020"
-              required
-            />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Renda (R$) <span style="color: var(--color-danger);">*</span></label>
-          <input
-            v-model.number="formLista.renda"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="0,00"
-            required
-          />
-        </div>
-
-        <div v-if="listas.length > 0" class="form-group">
-          <label>Copiar itens de</label>
-          <select v-model="formLista.copiarDe">
-            <option :value="null">Não copiar</option>
-            <option
-              v-for="l in listas"
-              :key="l.id"
-              :value="l.id"
-            >{{ l.nome }} ({{ mesesNomes[l.mes - 1] }}/{{ l.ano }})</option>
-          </select>
-        </div>
-
-        <div class="flex" style="gap: 8px; margin-top: 8px;">
-          <button type="button" class="btn btn-ghost" style="flex: 1;" @click="fecharModalLista">
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-primary" style="flex: 2;" :disabled="salvandoLista">
-            {{ salvandoLista ? 'Criando...' : 'Criar Lista' }}
-          </button>
-        </div>
-      </form>
-    </Modal>
   </div>
 </template>
 
@@ -345,9 +249,8 @@ import { useToast } from '../composables/useToast'
 import { api } from '../api/client'
 import CategoriaGroup from '../components/CategoriaGroup.vue'
 import ListaItem from '../components/ListaItem.vue'
-import ListaSelector from '../components/ListaSelector.vue'
 import Modal from '../components/Modal.vue'
-import type { Lista, ListaItem as ListaItemType, Produto } from '../types'
+import type { ListaItem as ListaItemType, Produto } from '../types'
 
 const {
   listas,
@@ -363,105 +266,16 @@ const {
   addItem,
   updateItem,
   deleteItem,
-  createLista,
-  copiarLista,
-  updateLista,
-  deleteLista,
 } = useLista()
 
-// Selector bottom sheet
-const selectorAberto = ref(false)
-
-function selecionarLista(lista: Lista) {
-  listaAtiva.value = lista
-  selectorAberto.value = false
+function trocarLista(id: number) {
+  const lista = listas.value.find(l => l.id === id)
+  if (lista) {
+    listaAtiva.value = lista
+  }
 }
 
 const { addToast } = useToast()
-
-// ===== Gestão de Listas =====
-const mesesNomes = [
-  'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-  'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez',
-]
-
-const modalListaAberto = ref(false)
-const salvandoLista = ref(false)
-
-const formLista = reactive({
-  nome: '',
-  mes: 1,
-  ano: 2026,
-  renda: 0,
-  copiarDe: null as number | null,
-})
-
-function abrirModalNovaLista() {
-  // Pre-fill inteligente: próximo mês a partir da lista ativa, ou mês atual
-  const now = new Date()
-  let mes = now.getMonth() + 1
-  let ano = now.getFullYear()
-
-  if (listaAtiva.value) {
-    mes = listaAtiva.value.mes + 1
-    ano = listaAtiva.value.ano
-    if (mes > 12) { mes = 1; ano++ }
-  }
-
-  formLista.nome = `Compras ${mesesNomes[mes - 1]}/${ano}`
-  formLista.mes = mes
-  formLista.ano = ano
-  formLista.renda = listaAtiva.value?.renda ?? 0
-  formLista.copiarDe = listaAtiva.value?.id ?? null
-  modalListaAberto.value = true
-}
-
-function fecharModalLista() {
-  modalListaAberto.value = false
-}
-
-async function salvarNovaLista() {
-  salvandoLista.value = true
-  try {
-    const input = {
-      nome: formLista.nome,
-      mes: formLista.mes,
-      ano: formLista.ano,
-      renda: formLista.renda,
-    }
-
-    let nova
-    if (formLista.copiarDe) {
-      nova = await copiarLista(formLista.copiarDe, input)
-    } else {
-      nova = await createLista(input)
-    }
-
-    if (nova) {
-      // Ativa automaticamente a nova lista
-      await updateLista(nova.id, { status: 'ativa' })
-      listaAtiva.value = { ...nova, status: 'ativa' }
-    }
-
-    fecharModalLista()
-  } finally {
-    salvandoLista.value = false
-  }
-}
-
-async function confirmarDeleteLista(lista: Lista) {
-  const msg = lista.id === listaAtiva.value?.id
-    ? `"${lista.nome}" é a lista ativa. Ao removê-la, outra será ativada. Continuar?`
-    : `Remover a lista "${lista.nome}"?`
-  if (!confirm(msg)) return
-  await deleteLista(lista.id)
-  selectorAberto.value = false
-}
-
-async function handleUpdateLista(id: number, data: { nome: string; renda: number }) {
-  await updateLista(id, data)
-  addToast('Lista atualizada', 'success')
-}
 
 // Produtos para o modal
 const produtos = ref<Produto[]>([])
@@ -495,7 +309,11 @@ function loadExpandedMap(): Record<string, boolean> {
 
 const expandedMap = reactive<Record<string, boolean>>(loadExpandedMap())
 
-// mesesNomes já definido acima na gestão de listas
+// Meses em português
+const meses = [
+  'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+  'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez',
+]
 
 // Filtro de itens
 const filtroLista = ref<'todos' | 'faltam' | 'comprados'>('todos')

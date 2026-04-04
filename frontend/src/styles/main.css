@@ -823,23 +823,6 @@ select {
   background: var(--color-primary-light);
 }
 
-/* ===== Lista Name Button (header) ===== */
-.lista-nome-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  max-width: 100%;
-  min-width: 0;
-}
-
-.lista-nome-btn:active {
-  opacity: 0.7;
-}
-
 /* ===== Filter Chips ===== */
 .filter-chip {
   padding: 4px 12px;
